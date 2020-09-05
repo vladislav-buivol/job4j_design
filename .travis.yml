@@ -1,0 +1,7 @@
+language: java
+notifications:
+  email:
+    recipients:
+      -vladislav.96@mail.ru
+    on_success: never
+    on_failure: always
