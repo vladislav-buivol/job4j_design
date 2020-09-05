@@ -1,7 +1,25 @@
 language: java
+
+sudo: false
+
+jdk:
+  - oraclejdk14
+
+cache:
+  directories:
+    - .autoconf
+    - $HOME/.m2
+
 notifications:
   email:
     recipients:
-      -vladislav.96@mail.ru
-    on_success: never
+      - vladislav.96@mail.ru
+    on_success: false
     on_failure: always
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+env:
+  global:
+    - CODECOV_TOKEN="d96143b7-a96a-4fa9-8e3a-3961faae1eb7"
