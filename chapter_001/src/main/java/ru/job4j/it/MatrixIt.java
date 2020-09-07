@@ -19,6 +19,14 @@ public class MatrixIt implements Iterator<Integer> {
         this.data = data;
     }
 
+    public static void main(String[] args) {
+        int[][] in = {
+                {}, {1}
+        };
+        MatrixIt it = new MatrixIt(in);
+        System.out.println(it.hasNext());
+    }
+
     /**
      * Check that iterator has next element
      *
@@ -26,7 +34,30 @@ public class MatrixIt implements Iterator<Integer> {
      */
     @Override
     public boolean hasNext() {
-        return hasNextRow() || hasNextColumn();
+        if (hasNextColumn()) {
+            return true;
+        }
+        this.column = 0;
+        skipEmptyElements();
+        return hasNextRow();
+    }
+
+    /**
+     * Increase the row pointer while it is empty
+     */
+    private void skipEmptyElements() {
+        do {
+            this.row++;
+        } while (hasNextRow() && isNextRowEmpty());
+    }
+
+    /**
+     * Check if next row empty.
+     *
+     * @return false if row not empty, else returns true
+     */
+    private boolean isNextRowEmpty() {
+        return data[row].length == 0;
     }
 
     /**
@@ -34,24 +65,22 @@ public class MatrixIt implements Iterator<Integer> {
      */
     @Override
     public Integer next() {
-        if (hasNextColumn()) {
-            return data[this.row][this.column++];
-        } else if (hasNextRow()) {
-            this.row++;
-            if (data[row].length > 0) {
-                this.column = 0;
-                return data[row][this.column++];
-            } else {
-                return next();
-            }
+        if (!hasNext()) {
+            throw new NoSuchElementException();
         }
-        throw new NoSuchElementException();
+        return data[row][column++];
     }
 
+    /**
+     * @return true, if matrix has next row, else return false
+     */
     private boolean hasNextRow() {
-        return this.row < data.length - 1;
+        return this.row < data.length;
     }
 
+    /**
+     * @return true if matrix has next column, else return false
+     */
     private boolean hasNextColumn() {
         return this.column < data[row].length;
     }
