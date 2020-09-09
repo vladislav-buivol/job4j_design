@@ -19,14 +19,6 @@ public class MatrixIt implements Iterator<Integer> {
         this.data = data;
     }
 
-    public static void main(String[] args) {
-        int[][] in = {
-                {}, {1}
-        };
-        MatrixIt it = new MatrixIt(in);
-        System.out.println(it.hasNext());
-    }
-
     /**
      * Check that iterator has next element
      *
@@ -34,30 +26,11 @@ public class MatrixIt implements Iterator<Integer> {
      */
     @Override
     public boolean hasNext() {
-        if (hasNextColumn()) {
-            return true;
+        while (data.length > row && column == data[row].length ){
+            column = 0;
+            row++;
         }
-        this.column = 0;
-        skipEmptyElements();
-        return hasNextRow();
-    }
-
-    /**
-     * Increase the row pointer while it is empty
-     */
-    private void skipEmptyElements() {
-        do {
-            this.row++;
-        } while (hasNextRow() && isNextRowEmpty());
-    }
-
-    /**
-     * Check if next row empty.
-     *
-     * @return false if row not empty, else returns true
-     */
-    private boolean isNextRowEmpty() {
-        return data[row].length == 0;
+        return data.length > row && column < data[row].length;
     }
 
     /**
@@ -69,19 +42,5 @@ public class MatrixIt implements Iterator<Integer> {
             throw new NoSuchElementException();
         }
         return data[row][column++];
-    }
-
-    /**
-     * @return true, if matrix has next row, else return false
-     */
-    private boolean hasNextRow() {
-        return this.row < data.length;
-    }
-
-    /**
-     * @return true if matrix has next column, else return false
-     */
-    private boolean hasNextColumn() {
-        return this.column < data[row].length;
     }
 }
