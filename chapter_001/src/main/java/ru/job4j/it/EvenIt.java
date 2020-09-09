@@ -24,13 +24,10 @@ public class EvenIt implements Iterator<Integer> {
      */
     @Override
     public boolean hasNext() {
-        while (isValidPoint()) {
-            if (isEvenNumber()) {
-                return true;
-            }
+        while (isValidPoint() && !isEvenNumber()) {
             point++;
         }
-        return false;
+        return isValidPoint();
     }
 
     /**
@@ -38,10 +35,10 @@ public class EvenIt implements Iterator<Integer> {
      */
     @Override
     public Integer next() {
-        if (hasNext()) {
-            return data[point++];
+        if (!hasNext()) {
+            throw new NoSuchElementException();
         }
-        throw new NoSuchElementException();
+        return data[point++];
     }
 
     /**
