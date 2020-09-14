@@ -13,15 +13,11 @@ public class SimpleArrayTest {
     public void add() {
         SimpleArray<Integer> simpleArray = new SimpleArray<>(3);
         simpleArray.add(1);
-        checkElements(simpleArray, 1, null, null);
+        checkElements(simpleArray, 1);
         simpleArray.add(2);
-        checkElements(simpleArray, 1, 2, null);
+        checkElements(simpleArray, 1, 2);
         simpleArray.add(3);
         checkElements(simpleArray, 1, 2, 3);
-        simpleArray.set(1, null);
-        simpleArray.add(4);
-        checkElements(simpleArray, 1, 4, 3);
-        assertThat(simpleArray.add(4), is(false));
     }
 
 
@@ -30,21 +26,26 @@ public class SimpleArrayTest {
         SimpleArray<Integer> simpleArray = new SimpleArray<>(3);
         addElementsToArray(simpleArray, 1, 2, 3);
         simpleArray.remove(1);
-        checkElements(simpleArray, 1, 3, null);
+        checkElements(simpleArray, 1, 3);
         simpleArray.add(4);
         simpleArray.remove(0);
-        simpleArray.remove(2);
-        checkElements(simpleArray, 3, 4, null);
+        simpleArray.remove(1);
+        checkElements(simpleArray, 3);
     }
 
     @Test
     public void setElemTest() {
         SimpleArray<Integer> simpleArray = new SimpleArray<>(3);
         addElementsToArray(simpleArray, 1, 2, 3);
-        simpleArray.set(0, null);
         simpleArray.set(2, 20);
         simpleArray.set(1, 30);
-        checkElements(simpleArray, null, 30, 20);
+        checkElements(simpleArray, 1, 30, 20);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void setElemErrorTest() {
+        SimpleArray<Integer> simpleArray = new SimpleArray<>(3);
+        addElementsToArray(simpleArray, 1, 2, 3);
+        simpleArray.set(0, null);
     }
 
     @Test
@@ -86,7 +87,7 @@ public class SimpleArrayTest {
 
     @Test
     public void iteratorTest() {
-        SimpleArray<Integer> simpleArray = new SimpleArray<>(3);
+        SimpleArray<Integer> simpleArray = new SimpleArray<>(6);
         addElementsToArray(simpleArray, 1, 2, 3);
         Iterator<Integer> iterator = simpleArray.iterator();
         assertThat(iterator.hasNext(), is(true));

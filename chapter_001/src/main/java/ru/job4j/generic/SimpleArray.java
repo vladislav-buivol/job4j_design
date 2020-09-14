@@ -13,12 +13,14 @@ import java.util.Objects;
  */
 public class SimpleArray<T> {
     private final int length;
-    private final T[] data;
+    private int nrOfElements;
+    private T[] data;
 
 
     public SimpleArray(int length) {
         this.length = length;
         this.data = (T[]) new Object[length];
+        nrOfElements = 0;
     }
 
     /**
@@ -28,9 +30,9 @@ public class SimpleArray<T> {
      * @return true if element was added, else false
      */
     public boolean add(T model) {
-        int indexToAdd = getFirstNullElemIndex();
-        if (indexToAdd != -1) {
-            data[indexToAdd] = model;
+        if (nrOfElements < length) {
+            data[nrOfElements] = model;
+            nrOfElements++;
             return true;
         }
         return false;
@@ -43,10 +45,12 @@ public class SimpleArray<T> {
      * @param model - element to set
      */
     public void set(int index, T model) {
+        if (model == null) {
+            throw new IllegalArgumentException(model + "");
+        }
         checkIndex(index);
         data[index] = model;
     }
-
 
     /**
      * Remove the element at the specified index and shift all other after the specified index to left
@@ -55,11 +59,11 @@ public class SimpleArray<T> {
      */
     public void remove(int index) {
         checkIndex(index);
-        for (int i = index; i < length - 1; i++) {
-            data[i] = data[i + 1];
-        }
-        data[length - 1] = null;
-
+        T[] tmp = (T[]) new Object[length];
+        System.arraycopy(data, 0, tmp, 0, index);
+        System.arraycopy(data, index + 1, tmp, index, data.length - index - 1);
+        nrOfElements--;
+        data = tmp;
     }
 
     /**
@@ -80,7 +84,7 @@ public class SimpleArray<T> {
 
             @Override
             public boolean hasNext() {
-                return point < length;
+                return point < nrOfElements;
             }
 
             @Override
@@ -94,22 +98,12 @@ public class SimpleArray<T> {
     }
 
     /**
-     * @return index of the first null element found. If there no null element, then return -1
-     */
-    private int getFirstNullElemIndex() {
-        for (int i = 0; i < this.length; i++) {
-            if (data[i] == null) return i;
-        }
-        return -1;
-    }
-
-    /**
      * Check that index is smaller than the array length
      *
      * @param index to check
      */
     private void checkIndex(int index) {
-        Objects.checkIndex(index, length);
+        Objects.checkIndex(index, nrOfElements);
     }
 
 
