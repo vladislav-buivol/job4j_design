@@ -31,6 +31,10 @@ public class SimpleArrayTest {
         simpleArray.remove(0);
         simpleArray.remove(1);
         checkElements(simpleArray, 3);
+        simpleArray.add(5);
+        simpleArray.add(6);
+        simpleArray.remove(2);
+        checkElements(simpleArray, 3, 5);
     }
 
     @Test

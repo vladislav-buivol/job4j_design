@@ -59,11 +59,9 @@ public class SimpleArray<T> {
      */
     public void remove(int index) {
         checkIndex(index);
-        T[] tmp = (T[]) new Object[length];
-        System.arraycopy(data, 0, tmp, 0, index);
-        System.arraycopy(data, index + 1, tmp, index, data.length - index - 1);
+        System.arraycopy(data, index + 1, data, index, nrOfElements - index - 1);
+        data[nrOfElements - 1] = null;
         nrOfElements--;
-        data = tmp;
     }
 
     /**
