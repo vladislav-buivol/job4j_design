@@ -41,6 +41,8 @@ public class MemStoreTest {
         memStore.delete(base2.getId());
         assertThat(memStore.findById(base2.getId()),is(nullValue()));
         assertThat(memStore.size(),is(1));
+        assertThat(memStore.delete(base1.getId()),is(true));
+        assertThat(memStore.delete("2"),is(false));
 
     }
 
