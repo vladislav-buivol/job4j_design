@@ -32,6 +32,7 @@ public class MemStoreTest {
         memStore.add(base1);
         memStore.replace(base1.getId(),base2);
         assertThat(memStore.findById(base2.getId()),is(base2));
+        assertThat(memStore.replace(base2.getId(),base1),is(true));
     }
 
     @Test
