@@ -21,4 +21,8 @@ public class SimpleStack<T> {
         linked.add(value);
     }
 
+    public boolean isEmpty(){
+        return linked.isEmpty();
+    }
+
 }
