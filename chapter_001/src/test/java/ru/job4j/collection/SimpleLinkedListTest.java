@@ -9,11 +9,11 @@ import java.util.NoSuchElementException;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class SimpleLinkedArrayTest {
+public class SimpleLinkedListTest {
 
     @Test
     public void whenAddThenGet() {
-        SimpleLinkedArray<String> array = new SimpleLinkedArray<>();
+        SimpleLinkedList<String> array = new SimpleLinkedList<>();
         array.add("first");
         String rsl = array.get(0);
         assertThat(rsl, is("first"));
@@ -21,7 +21,7 @@ public class SimpleLinkedArrayTest {
 
     @Test
     public void whenAddThenIt() {
-        SimpleLinkedArray<String> array = new SimpleLinkedArray<>();
+        SimpleLinkedList<String> array = new SimpleLinkedList<>();
         array.add("first");
         String rsl = array.iterator().next();
         assertThat(rsl, is("first"));
@@ -29,26 +29,26 @@ public class SimpleLinkedArrayTest {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void whenGetEmpty() {
-        SimpleLinkedArray<String> array = new SimpleLinkedArray<>();
+        SimpleLinkedList<String> array = new SimpleLinkedList<>();
         array.get(0);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void whenGetOutBound() {
-        SimpleLinkedArray<String> array = new SimpleLinkedArray<>();
+        SimpleLinkedList<String> array = new SimpleLinkedList<>();
         array.add("first");
         array.get(1);
     }
 
     @Test(expected = NoSuchElementException.class)
     public void whenGetEmptyFromIt() {
-        SimpleLinkedArray<String> array = new SimpleLinkedArray<>();
+        SimpleLinkedList<String> array = new SimpleLinkedList<>();
         array.iterator().next();
     }
 
     @Test(expected = ConcurrentModificationException.class)
     public void whenCorruptedIt() {
-        SimpleLinkedArray<String> array = new SimpleLinkedArray<>();
+        SimpleLinkedList<String> array = new SimpleLinkedList<>();
         array.add("first");
         Iterator<String> it = array.iterator();
         array.add("second");
@@ -57,12 +57,16 @@ public class SimpleLinkedArrayTest {
 
     @Test
     public void testArrayScalability() {
-        SimpleLinkedArray<Integer> array = new SimpleLinkedArray<>();
+        SimpleLinkedList<Integer> array = new SimpleLinkedList<>();
         for (int i = 0; i < 100; i++) {
             array.add(i);
         }
         assertThat(array.get(0), is(0));
+        assertThat(array.get(48), is(48));
+        assertThat(array.get(49), is(49));
         assertThat(array.get(50), is(50));
+        assertThat(array.get(51), is(51));
+        assertThat(array.get(52), is(52));
         assertThat(array.get(99), is(99));
         assertThat(array.size, is(100));
     }

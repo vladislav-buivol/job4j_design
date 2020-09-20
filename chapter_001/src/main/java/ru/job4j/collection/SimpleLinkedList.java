@@ -1,6 +1,9 @@
 package ru.job4j.collection;
 
-import java.util.*;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * Linked list implementation
@@ -8,17 +11,14 @@ import java.util.*;
  * @author Vladislav Buivol
  * @since 19.09.2020
  */
-public class SimpleLinkedArray<E> implements Iterable<E> {
-    Object[] container;
-    private int length = 10;
+public class SimpleLinkedList<E> implements Iterable<E> {
     private int modCount = 0;
     int size = 0;
-    Node<E> first = null;
+    Node<E> head = null;
     Node<E> last = null;
 
 
-    public SimpleLinkedArray() {
-        this.container = new Object[length];
+    public SimpleLinkedList() {
     }
 
     /**
@@ -27,16 +27,14 @@ public class SimpleLinkedArray<E> implements Iterable<E> {
      * @param value - Value to add
      */
     public void add(E value) {
-        doubleContainerSize();
-        Node<E> l = last;
-        Node<E> newNode = new Node<E>(last, value, null);
-        last = newNode;
-        if (l == null) {
-            first = newNode;
+        Node<E> oldLast = last;
+        Node<E> addedNode = new Node<E>(oldLast, value, null);
+        last = addedNode;
+        if (oldLast == null) {
+            head = addedNode;
         } else {
-            l.next = newNode;
+            oldLast.next = addedNode;
         }
-        container[size] = newNode;
         size++;
         modCount++;
     }
@@ -49,13 +47,26 @@ public class SimpleLinkedArray<E> implements Iterable<E> {
      */
     public E get(int index) {
         checkIndex(index);
-        return (E) ((Node) container[index]).item;
+        Node<E> result = head;
+        if (index < size / 2) {
+            for (int i = 0; i != index; i++) {
+                result = result.next;
+            }
+        } else {
+            result = last;
+            System.out.println(size + " " + result.item);
+            for (int i = size - 1; i != index; i--) {
+                result = result.prev;
+                System.out.println(i + " " + result.item);
+            }
+        }
+        return result.item;
     }
 
 
     @Override
     public Iterator<E> iterator() {
-        SimpleLinkedArray<E> thisArray = this;
+        SimpleLinkedList<E> thisArray = this;
         return new Iterator<E>() {
             private int point = 0;
             private final int expectedModCount = modCount;
@@ -108,26 +119,12 @@ public class SimpleLinkedArray<E> implements Iterable<E> {
         }
     }
 
-    /**
-     * Double container size
-     */
-    private void doubleContainerSize() {
-        if (size >= length) {
-            length = length * 2;
-            Object[] newContainer = new Object[length];
-            System.arraycopy(container, 0, newContainer, 0, size);
-            container = newContainer;
-        }
-    }
-
     @Override
     public String toString() {
         return "SimpleLinkedArray{" +
-                "container=" + Arrays.toString(container) +
-                ", length=" + length +
-                ", modCount=" + modCount +
+                "modCount=" + modCount +
                 ", size=" + size +
-                ", first=" + first +
+                ", head=" + head +
                 ", last=" + last +
                 '}';
     }
