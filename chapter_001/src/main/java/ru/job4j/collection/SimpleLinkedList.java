@@ -54,10 +54,8 @@ public class SimpleLinkedList<E> implements Iterable<E> {
             }
         } else {
             result = last;
-            System.out.println(size + " " + result.item);
             for (int i = size - 1; i != index; i--) {
                 result = result.prev;
-                System.out.println(i + " " + result.item);
             }
         }
         return result.item;
@@ -66,8 +64,8 @@ public class SimpleLinkedList<E> implements Iterable<E> {
 
     @Override
     public Iterator<E> iterator() {
-        SimpleLinkedList<E> thisArray = this;
         return new Iterator<E>() {
+            Node<E> node = head;
             private int point = 0;
             private final int expectedModCount = modCount;
 
@@ -82,7 +80,9 @@ public class SimpleLinkedList<E> implements Iterable<E> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                return thisArray.get(point++);
+                Node<E> result = node;
+                node = node.next;
+                return result.item;
             }
         };
     }
