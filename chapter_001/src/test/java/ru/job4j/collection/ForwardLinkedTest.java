@@ -1,11 +1,12 @@
 package ru.job4j.collection;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ForwardLinkedTest {
 
@@ -28,5 +29,13 @@ public class ForwardLinkedTest {
         Iterator<Integer> it = linked.iterator();
         assertThat(it.next(), is(2));
         assertThat(it.next(), is(1));
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void whenEmptyAndRevertThenIter() {
+        ForwardLinked<Integer> linked = new ForwardLinked<>();
+        linked.revert();
+        Iterator<Integer> it = linked.iterator();
+        it.next();
     }
 }
