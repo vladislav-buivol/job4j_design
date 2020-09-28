@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.is;
 public class SimpleHashMapTest {
 
     @Test
-    public void insertAndGetTest() {
+    public void insertTest() {
         SimpleHashMap<String, Integer> map = new SimpleHashMap<>();
         String[] keys = new String[]{"key", "key2", "null", "AnoterKey_==!2%&31_'"};
         Integer[] values = new Integer[]{1, 2, 3, 4};
@@ -75,10 +75,10 @@ public class SimpleHashMapTest {
         for (int i = 0; i < keys.length; i++) {
             map.insert(keys[i], values[i]);
         }
-        Iterator<String> kIt = map.iterator();
-        assertThat(kIt.next(),is(keys[0]));
-        assertThat(kIt.next(),is(keys[1]));
-        assertThat(kIt.next(),is(keys[2]));
+        Iterator<String> kIt = map.keysIterator();
+        assertThat(kIt.next(), is(keys[1]));
+        assertThat(kIt.next(), is(keys[2]));
+        assertThat(kIt.next(), is(keys[0]));
 
     }
 }
