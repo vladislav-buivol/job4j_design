@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class SimpleHashMapTest {
 
@@ -33,8 +34,13 @@ public class SimpleHashMapTest {
         //indexes are same for key nr 0 and 2
         assertThat(map.get(keys[0]), is(values[0]));
         assertThat(map.get(keys[1]), is(values[1]));
-        assertThat(map.get(keys[2]), is(values[0]));
+        assertThat(map.get(keys[2]), nullValue());
         assertThat(map.get(keys[3]), is(values[3]));
+        assertThat(map.get("1"), nullValue());
+        map.insert(keys[0],values[2]);
+        map.insert(keys[2],values[3]);
+        assertThat(map.get(keys[0]), is(values[2]));
+        assertThat(map.get(keys[2]), nullValue());
     }
 
     @Test
@@ -59,6 +65,7 @@ public class SimpleHashMapTest {
     public void doubleContainerSizeTest() {
         SimpleHashMap<Integer, Integer> map = new SimpleHashMap<>();
         for (int i = 0; i < 67; i++) {
+            System.out.println(i);
             assertThat(map.insert(i, i), is(true));
         }
     }

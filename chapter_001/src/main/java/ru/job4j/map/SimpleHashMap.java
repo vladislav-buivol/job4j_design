@@ -17,11 +17,6 @@ public class SimpleHashMap<K, V> {
     private static final float LOAD_FACTORY = 0.75f;
     private int nrOfElements = 0;
 
-
-    public SimpleHashMap(int containerSize) {
-        this.entry = new Entry[containerSize];
-    }
-
     public SimpleHashMap() {
         this.entry = new Entry[DEFAULT_CONTAINER_SIZE];
     }
@@ -37,9 +32,10 @@ public class SimpleHashMap<K, V> {
         resize();
         int hash = indexFor(key);
         if (entry[hash] == null) {
-            entry[hash] = new Entry<>(key, value);
-            nrOfElements++;
+            addEntry(key, value);
             return true;
+        } else if (isKeysEquals(key)) {
+            updateEntry(key, value);
         }
         return false;
     }
@@ -50,7 +46,11 @@ public class SimpleHashMap<K, V> {
      * @param key - key to the object to get
      */
     public V get(K key) {
-        return (V) entry[indexFor(key)].value();
+        Entry<K, V> e = entry[indexFor(key)];
+        if (!isKeysEquals(key)) {
+            return null;
+        }
+        return e.value();
     }
 
     /**
@@ -61,7 +61,8 @@ public class SimpleHashMap<K, V> {
      */
     public boolean delete(K key) {
         int hash = indexFor(key);
-        if (entry[hash] == null) {
+        Entry<K, V> e = entry[hash];
+        if (!isKeysEquals(key)) {
             return false;
         }
         nrOfElements--;
@@ -89,7 +90,7 @@ public class SimpleHashMap<K, V> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                return (K) entry[point++].key();
+                return entry[point++].key();
             }
         };
     }
@@ -114,7 +115,7 @@ public class SimpleHashMap<K, V> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                return (V) entry[point++].value();
+                return entry[point++].value();
             }
         };
     }
@@ -133,11 +134,38 @@ public class SimpleHashMap<K, V> {
 
     private void resize() {
         if (nrOfElements >= containerSize * LOAD_FACTORY) {
-            this.containerSize = this.containerSize * 2;
-            Entry<K, V>[] newEntry = new Entry[containerSize];
-            System.arraycopy(entry, 0, newEntry, 0, nrOfElements);
-            entry = newEntry;
+            containerSize = containerSize * 2;
+            this.entry = transfer();
         }
+    }
+
+    private Entry<K, V>[] transfer() {
+        Entry<K, V>[] newEntry = new Entry[containerSize];
+        for (Entry<K, V> e : this.entry) {
+            if (e != null) {
+                newEntry[indexFor(e.key())] = e;
+            }
+        }
+        return newEntry;
+    }
+
+    private boolean isKeysEquals(K key) {
+        Entry<K, V> e = entry[indexFor(key)];
+        if (e == null) {
+            return false;
+        } else if (key == null && e.key() == null) {
+            return true;
+        }
+        return e.key().equals(key);
+    }
+
+    private void updateEntry(K key, V value) {
+        entry[indexFor(key)] = new Entry<>(key, value);
+    }
+
+    private void addEntry(K key, V value) {
+        entry[indexFor(key)] = new Entry<>(key, value);
+        nrOfElements++;
     }
 
     @Override
