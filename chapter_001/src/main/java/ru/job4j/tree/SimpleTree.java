@@ -8,6 +8,8 @@ public interface SimpleTree<E> {
 
     boolean add(E parent, E child);
 
+    boolean isBinary();
+
     Optional<Node<E>> findBy(E value);
 
     class Node<E> {
@@ -16,6 +18,14 @@ public interface SimpleTree<E> {
 
         public Node(E value) {
             this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "value=" + value +
+                    ", children=" + children +
+                    '}';
         }
     }
 }
