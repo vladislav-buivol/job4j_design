@@ -34,10 +34,8 @@ public class SimpleHashMap<K, V> {
         if (entry[hash] == null) {
             addEntry(key, value);
             return true;
-        } else if (isKeysEquals(key)) {
-            updateEntry(key, value);
         }
-        return false;
+        return updateEntry(key, value);
     }
 
     /**
@@ -159,8 +157,12 @@ public class SimpleHashMap<K, V> {
         return e.key().equals(key);
     }
 
-    private void updateEntry(K key, V value) {
-        entry[indexFor(key)] = new Entry<>(key, value);
+    private boolean updateEntry(K key, V value) {
+        if (isKeysEquals(key)) {
+            entry[indexFor(key)] = new Entry<>(key, value);
+            return true;
+        }
+        return false;
     }
 
     private void addEntry(K key, V value) {
