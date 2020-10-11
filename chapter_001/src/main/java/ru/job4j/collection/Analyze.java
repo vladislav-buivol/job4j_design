@@ -62,62 +62,38 @@ public class Analyze {
         }
 
         private void diff() {
-            HashMap<User, Integer> cUsers = countUsers(current);
-            HashMap<User, Integer> difference = findChangedAndDeletedUsers(previous, cUsers);
-            findAddedUsers(difference);
+            HashMap<Integer, User> currentUserEntries = createUserEntries(current);
+            findNrOfChangedAndDeletedUsers(currentUserEntries);
+            findNumberOfAddedUsers();
         }
 
-        private HashMap<User, Integer> findChangedAndDeletedUsers(List<User> comparableUsers, HashMap<User, Integer> cUsers) {
-            HashMap<User, Integer> result = (HashMap) cUsers.clone();
-            mainLoop:
-            for (User pUser : comparableUsers) {
-                for (Map.Entry<User, Integer> entry : result.entrySet()) {
-                    if (isNameAndIdEquals(entry, pUser)) {
-                        int nrOfUsers = getNrOfUsers(result, entry.getKey());
-                        decreaseQuantityByOne(result, entry, nrOfUsers);
-                        continue mainLoop;
-                    } else if (IsIdEqualsAndNamesDifferent(pUser, entry)) {
-                        int nrOfUsers = getNrOfUsers(result, entry.getKey());
-                        decreaseQuantityByOne(result, entry, nrOfUsers);
-                        if (nrOfUsers > 0) {
-                            changed++;
-                        }
-                        continue mainLoop;
+        private void findNrOfChangedAndDeletedUsers(HashMap<Integer, User> currentUserEntries) {
+            for (User pUser : previous) {
+                int id = pUser.id();
+                if (currentUserEntries.containsKey(id)) {
+                    if (!currentUserEntries.get(id).name().equals(pUser.name())) {
+                        changed++;
                     }
+                } else {
+                    deleted++;
                 }
-                deleted++;
-            }
-            return result;
-        }
-
-        private void findAddedUsers(HashMap<User, Integer> cUsers) {
-            for (User user : cUsers.keySet()) {
-                added = added + getNrOfUsers(cUsers, user);
             }
         }
 
-        private HashMap<User, Integer> countUsers(List<User> users) {
-            HashMap<User, Integer> res = new HashMap<>();
+        private void findNumberOfAddedUsers() {
+            for (User cUser : current) {
+                if (!previous.contains(cUser)) {
+                    added++;
+                }
+            }
+        }
+
+        private HashMap<Integer, User> createUserEntries(List<User> users) {
+            HashMap<Integer, User> entries = new HashMap<>();
             for (User user : users) {
-                res.merge(user, 1, Integer::sum);
+                entries.put(user.id(), user);
             }
-            return res;
-        }
-
-        boolean isNameAndIdEquals(Map.Entry<User, Integer> entry, User pUser) {
-            return entry.getKey().equals(pUser) && entry.getKey().name().equals(pUser.name());
-        }
-
-        private Integer getNrOfUsers(HashMap<User, Integer> cUsers, User key) {
-            return cUsers.get(key);
-        }
-
-        private void decreaseQuantityByOne(HashMap<User, Integer> cUsers, Map.Entry<User, Integer> entry, int nrOfUsers) {
-            cUsers.put(entry.getKey(), nrOfUsers - 1);
-        }
-
-        private boolean IsIdEqualsAndNamesDifferent(User pUser, Map.Entry<User, Integer> entry) {
-            return entry.getKey().equals(pUser) && !entry.getKey().name().equals(pUser.name());
+            return entries;
         }
 
         public int added() {
