@@ -81,11 +81,7 @@ public class Analyze {
         }
 
         private void findNumberOfAddedUsers() {
-            for (User cUser : current) {
-                if (!previous.contains(cUser)) {
-                    added++;
-                }
-            }
+            added = Math.abs(previous.size() - deleted - current.size());
         }
 
         private HashMap<Integer, User> createUserEntries(List<User> users) {
