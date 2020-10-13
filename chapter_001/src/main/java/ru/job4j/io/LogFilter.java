@@ -10,7 +10,6 @@ public class LogFilter {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.lines().
                     filter(line -> containsStatusCode(line, "404"))
-                    .map(LogFilter::addNewLineSymbol)
                     .forEach(lines::add);
         } catch (Exception e) {
             e.printStackTrace();
@@ -26,14 +25,16 @@ public class LogFilter {
 
     public static void save(List<String> log, String file) {
         try (PrintWriter out = new PrintWriter(new BufferedOutputStream(new FileOutputStream(file)))) {
-            log.forEach(out::write);
+            log.stream()
+                    .map(LogFilter::addNewLineSymbol)
+                    .forEach(out::write);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private static String addNewLineSymbol(String line) {
-        return line + "\n";
+        return line + System.lineSeparator();
     }
 
     private static boolean containsStatusCode(String line, String statusCode) {
