@@ -8,9 +8,20 @@ import java.util.List;
 
 public class Search {
     public static void main(String[] args) throws IOException {
-        Path currentDir = Paths.get(".");
-        //search(currentDir, ".js").forEach(System.out::println);
-        Search.searchDuplicates(currentDir).forEach(el -> System.out.println(el.toString()));
+        validateParameters(args);
+        Path currentDir = Paths.get(args[0]);
+        String extension = args[1];
+        search(currentDir, extension).forEach(System.out::println);
+        //Search.searchDuplicates(currentDir).forEach(el -> System.out.println(el.toString()));
+    }
+
+    private static void validateParameters(String[] args) {
+        if(args.length == 0){
+            throw new IllegalArgumentException("Root folder and extension are null. Use java -jar search.jar ROOT_FOLDER EXTENSION");
+        }
+        else if(args.length == 1){
+            throw new IllegalArgumentException("Extension is null. Use java -jar search.jar ROOT_FOLDER EXTENSION");
+        }
     }
 
     public static List<Path> search(Path root, String ext) throws IOException {
