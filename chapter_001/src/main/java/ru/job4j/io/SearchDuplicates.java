@@ -14,8 +14,8 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class SearchDuplicates implements FileVisitor<Path> {
 
-    private final HashMap<File, ArrayList<Path>> paths = new HashMap<>();
-    private final ArrayList<File> duplicates = new ArrayList<>();
+    private final HashMap<Document, ArrayList<Path>> paths = new HashMap<>();
+    private final ArrayList<Document> duplicates = new ArrayList<>();
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -24,16 +24,16 @@ public class SearchDuplicates implements FileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        File viewedFile = new File(file.getFileName(),file,FileUtils.sizeOf(file.toFile()));
-        if (paths.get(viewedFile) == null){
+        Document viewedDocument = new Document(file.getFileName(),file,FileUtils.sizeOf(file.toFile()));
+        if (paths.get(viewedDocument) == null){
             ArrayList<Path> filePath = new ArrayList<>();
             filePath.add(file.toAbsolutePath());
-            paths.put(viewedFile, filePath);
+            paths.put(viewedDocument, filePath);
         }
         else {
-            paths.get(viewedFile).add(file);
-            if(!duplicates.contains(viewedFile)){
-                duplicates.add(viewedFile);
+            paths.get(viewedDocument).add(file);
+            if(!duplicates.contains(viewedDocument)){
+                duplicates.add(viewedDocument);
             }
         }
         return CONTINUE;
@@ -49,7 +49,7 @@ public class SearchDuplicates implements FileVisitor<Path> {
         return CONTINUE;
     }
 
-    public ArrayList<File> duplicates() {
+    public ArrayList<Document> duplicates() {
         return duplicates;
     }
 }

@@ -3,12 +3,12 @@ package ru.job4j.io;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class File {
+public class Document {
     private Path fileName;
     private Path path;
     private long size;
 
-    public File(Path fileName, Path path, long size) {
+    public Document(Path fileName, Path path, long size) {
         this.fileName = fileName;
         this.path = path;
         this.size = size;
@@ -29,10 +29,10 @@ public class File {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof File)) return false;
-        File file = (File) o;
-        return size == file.size &&
-                Objects.equals(fileName, file.fileName);
+        if (!(o instanceof Document)) return false;
+        Document document = (Document) o;
+        return size == document.size &&
+                Objects.equals(fileName, document.fileName);
     }
 
     @Override

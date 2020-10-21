@@ -30,7 +30,7 @@ public class Search {
         return searcher.getPaths();
     }
 
-    public static List<File> searchDuplicates(Path root) throws IOException {
+    public static List<Document> searchDuplicates(Path root) throws IOException {
         SearchDuplicates searcher = new SearchDuplicates();
         Files.walkFileTree(root, searcher);
         return searcher.duplicates();
