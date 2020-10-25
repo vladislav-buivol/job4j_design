@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Search {
     public static void main(String[] args) throws IOException {
@@ -16,16 +17,21 @@ public class Search {
     }
 
     private static void validateParameters(String[] args) {
-        if(args.length == 0){
+        if (args.length == 0) {
             throw new IllegalArgumentException("Root folder and extension are null. Use java -jar search.jar ROOT_FOLDER EXTENSION");
-        }
-        else if(args.length == 1){
+        } else if (args.length == 1) {
             throw new IllegalArgumentException("Extension is null. Use java -jar search.jar ROOT_FOLDER EXTENSION");
         }
     }
 
     public static List<Path> search(Path root, String ext) throws IOException {
         SearchFiles searcher = new SearchFiles(p -> p.toFile().getName().endsWith(ext));
+        Files.walkFileTree(root, searcher);
+        return searcher.getPaths();
+    }
+
+    public static List<Path> search(Path root, Predicate<Path> condition) throws IOException {
+        SearchFiles searcher = new SearchFiles(condition);
         Files.walkFileTree(root, searcher);
         return searcher.getPaths();
     }
