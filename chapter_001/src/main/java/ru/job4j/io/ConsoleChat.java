@@ -13,6 +13,7 @@ public class ConsoleChat {
     private static final String OUT = "закончить";
     private static final String STOP = "стоп";
     private static final String CONTINUE = "продолжить";
+    private final ArrayList<String> log = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -26,40 +27,48 @@ public class ConsoleChat {
     }
 
     public void run() {
+        startChat();
+        saveChat();
+    }
+
+    private void startChat() {
+        String userInput;
+        Bot bot = new Bot(CONTINUE, this.log);
+        User user = new User(new Scanner(System.in), this.log);
+        while (!(userInput = user.say()).equals(OUT)) {
+            bot.updateStatus(userInput);
+            bot.say();
+        }
+    }
+
+    private void saveChat() {
         try (BufferedWriter bf = new BufferedWriter(new FileWriter(path, StandardCharsets.UTF_8, true))) {
-            String userInput;
-            Bot bot = new Bot(CONTINUE, bf);
-            User user = new User(new Scanner(System.in), bf);
-            while (!(userInput = user.say()).equals(OUT)) {
-                bot.updateStatus(userInput);
-                bot.say();
-            }
+            this.log.forEach(el -> record(bf, el));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    private void record(BufferedWriter bf, String userInput, String s) {
+    private void record(BufferedWriter bf, String userInput) {
         try {
-            bf.write(String.format(s, userInput, System.lineSeparator()));
+            bf.write(userInput + System.lineSeparator());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private class User {
-        private final BufferedWriter bf;
         private final Scanner scanner;
+        private ArrayList<String> log;
 
-        private User(Scanner scanner, BufferedWriter bf) {
-            this.bf = bf;
+        private User(Scanner scanner, ArrayList<String> log) {
             this.scanner = scanner;
+            this.log = log;
         }
 
         private String say() {
             String input = this.scanner.nextLine();
-            record(this.bf, input, "User: %s %s");
+            log.add("User: " + input);
             return input;
         }
 
@@ -68,12 +77,12 @@ public class ConsoleChat {
     private class Bot {
         private String status;
         private final List<String> answers;
-        private final BufferedWriter bf;
+        private ArrayList<String> log;
 
-        public Bot(String status, BufferedWriter bf) {
+        public Bot(String status, ArrayList<String> log) {
             this.status = status;
             this.answers = listOfAnswers(botAnswers);
-            this.bf = bf;
+            this.log = log;
         }
 
         public void say() {
@@ -81,8 +90,8 @@ public class ConsoleChat {
             botInput = "";
             if (!status.equals(STOP)) {
                 botInput = botAnswer(this.answers);
-                record(bf, botInput, "Bot: %s %s");
             }
+            log.add("Bot: " + botInput);
             System.out.println(botInput);
         }
 
