@@ -10,7 +10,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class EchoServer {
-    private static HashMap<String, String> values;
+    private static HashMap<String, Parameter> values;
+    private static final String HELLO = "Hello, dear friend.";
+    private static final String OK_STATUS = "HTTP/1.1 200 OK\r\n\\";
+    private static final String MSG = "msg";
 
     public static void main(String[] args) throws IOException {
         try (ServerSocket server = new ServerSocket(9000)) {
@@ -27,7 +30,7 @@ public class EchoServer {
                         }
                         System.out.println(str);
                     }
-                    out.write("HTTP/1.1 200 OK\r\n\\".getBytes());
+                    sendResponse(out);
                     if (exit()) {
                         System.out.println("Finishing work..");
                         break;
@@ -37,8 +40,22 @@ public class EchoServer {
         }
     }
 
+    private static void sendPositiveResponse(OutputStream out) throws IOException {
+        out.write(OK_STATUS.getBytes());
+    }
+
+    private static void sendResponse(OutputStream out) throws IOException {
+        out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+        Parameter parameter = values.get(MSG);
+        if (parameter.type == ParameterType.Hello) {
+            out.write(HELLO.getBytes());
+        } else {
+            out.write(parameter.value.getBytes());
+        }
+    }
+
     private static boolean exit() {
-        return values.get("msg").equals("Bye");
+        return values.get(MSG).type == ParameterType.Exit;
     }
 
     private static void parseParameters(String substring) {
@@ -48,6 +65,35 @@ public class EchoServer {
 
     private static void addValue(String el) {
         String[] parts = el.split("=");
-        values.put(parts[0], parts[1]);
+        Parameter param = new Parameter(parts[0], parts[1], Parameter.valueOf(parts[1]));
+        values.put(parts[0], param);
+    }
+
+    private enum ParameterType {
+        Exit,
+        Hello,
+        Any
+    }
+
+    private static class Parameter {
+        private String key;
+        private String value;
+        private ParameterType type;
+
+        public Parameter(String key, String value, ParameterType parameter) {
+            this.key = key;
+            this.value = value;
+            this.type = parameter;
+        }
+
+        public static ParameterType valueOf(String value) {
+            value = value.toLowerCase();
+            if (ParameterType.Hello.toString().toLowerCase().equals(value)) {
+                return ParameterType.Hello;
+            } else if (ParameterType.Exit.toString().toLowerCase().equals(value)) {
+                return ParameterType.Exit;
+            }
+            return ParameterType.Any;
+        }
     }
 }
