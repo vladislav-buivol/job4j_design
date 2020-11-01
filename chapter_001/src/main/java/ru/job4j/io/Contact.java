@@ -13,6 +13,11 @@ public class Contact implements Serializable {
         this.phone = phone;
     }
 
+    public Contact(String phone) {
+        this.phone = phone;
+        zipCode = 123;
+    }
+
     public int getZipCode() {
         return zipCode;
     }
