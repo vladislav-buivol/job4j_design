@@ -2,6 +2,8 @@ package ru.job4j.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.json.JSONObject;
+import org.json.JSONPropertyIgnore;
 
 import java.util.Arrays;
 
@@ -65,8 +67,19 @@ public class Car {
         final Person person3 = new Person("User3", false, 56, new Contact("11-114"), "Worker3", "Married");
         Person[] users = new Person[]{person1, person2, person3};
         Car car = new Car(false, person, users, "123ASD", 2018);
-        createJSON(car);
-        jsonToObject(Car.carJson);
+        /*createJSON(car);
+        jsonToObject(Car.carJson);*/
+
+        JSONObject jsonObjectFromString = new JSONObject(carJson);
+        System.out.println(jsonObjectFromString);
+
+        JSONObject jsonObjectWithPut = new JSONObject();
+        jsonObjectWithPut.put("owner",car.getOwner());
+        jsonObjectWithPut.put("carNumber",car.getCarNumber());
+        jsonObjectWithPut.put("registered",car.isRegistered());
+        jsonObjectWithPut.put("users",car.getUsers());
+        jsonObjectWithPut.put("registrationYear",car.getRegistrationYear());
+        System.out.println(jsonObjectWithPut);
     }
 
     private static void jsonToObject(String s) {
@@ -90,12 +103,37 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
+        return "{" +
                 "registerad=" + registered +
                 ", owner=" + owner +
                 ", users=" + Arrays.toString(users) +
                 ", carNumber='" + carNumber + '\'' +
                 ", registrationYear=" + registrationYear +
                 '}';
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public Person getOwner() {
+        return owner;
+    }
+
+    public Person[] getUsers() {
+        return users;
+    }
+
+    public String getCarNumber() {
+        return carNumber;
+    }
+
+    @JSONPropertyIgnore
+    public int getRegistrationYear() {
+        return registrationYear;
+    }
+
+    public static String getCarJson() {
+        return carJson;
     }
 }

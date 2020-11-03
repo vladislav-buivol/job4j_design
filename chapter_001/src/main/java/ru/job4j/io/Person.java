@@ -2,6 +2,8 @@ package ru.job4j.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.json.JSONObject;
+import org.json.JSONPropertyIgnore;
 
 import java.util.Arrays;
 
@@ -17,7 +19,7 @@ public class Person {
 
         /* Преобразуем объект person в json-строку. */
         final Gson gson = new GsonBuilder().create();
-        System.out.println(gson.toJson(person));
+        //System.out.println(gson.toJson(person));
 
         /* Модифицируем json-строку */
         final String personJson =
@@ -47,12 +49,32 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "{" +
                 "name='" + name + '\'' +
                 ", sex=" + sex +
                 ", age=" + age +
                 ", contact=" + contact +
                 ", statuses=" + Arrays.toString(statuses) +
                 '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isSex() {
+        return sex;
+    }
+
+    public int getAge() {
+        return age;
+    }
+    @JSONPropertyIgnore
+    public Contact getContact() {
+        return contact;
+    }
+
+    public String[] getStatuses() {
+        return statuses;
     }
 }
