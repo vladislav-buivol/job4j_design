@@ -87,7 +87,7 @@ public class StartUI {
     }
 
     public static void main(String[] args) {
-        Input input = new ConsoleInput();
+        /*Input input = new ConsoleInput();
         Input validate = new ValidateInput(input);
         Store tracker = new SqlTracker();
         List<UserAction> actions = new ArrayList<>();
@@ -98,6 +98,6 @@ public class StartUI {
         actions.add(new FindByIdAction());
         actions.add(new FindByNameAction());
         actions.add(new ExitAction());
-        new StartUI().init(validate, tracker, actions);
+        new StartUI().init(validate, tracker, actions);*/
     }
 }

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class DatabaseProperties {
-    static String propertyLocation = (System.getProperty("user.dir") + "\\chapter_002\\src\\main\\resources\\app.properties").replace("\\", File.separator);
+    static String propertyLocation = (System.getProperty("user.dir") + "\\src\\main\\resources\\app.properties").replace("\\", File.separator);
     static Properties properties = new Properties();
     private static final String DRIVER = "driver-class-name";
     private static final String URL = "url";

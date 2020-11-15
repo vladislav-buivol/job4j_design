@@ -11,21 +11,26 @@ import java.util.function.Predicate;
 public class SqlTracker implements Store {
     private Connection cn;
     private String itemsTable = "items";
+    private final Connection connection;
 
     public static void main(String[] args) {
         Input validate = new ValidateInput(
                 new ConsoleInput()
         );
-        try (Store tracker = new SqlTracker()) {
+        /*try (Store tracker = new SqlTracker()) {
             tracker.init();
             List<UserAction> actions = new ArrayList<>();
             actions.add(new CreateAction());
             new StartUI().init(validate, tracker, actions);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
+
+    public SqlTracker(Connection connection) {
+        this.connection = connection;
+    }
 
     @Override
     public void init() {
@@ -44,17 +49,20 @@ public class SqlTracker implements Store {
 
     @Override
     public Item add(Item item) {
-        String addQuery = String.format("INSERT INTO %s(name) VALUES(?)", itemsTable);
-        try (PreparedStatement stmt = cn.prepareStatement(addQuery)) {
-            stmt.setString(1, item.getName());
-            if (!stmt.execute()) {
-                return null;
+        try (final PreparedStatement statement = this.connection
+                .prepareStatement("insert into items (name) values (?)", Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, item.getName());
+            statement.executeUpdate();
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    item.setId(generatedKeys.getString(1));
+                    return item;
+                }
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return item;
+        throw new IllegalStateException("Could not create new user");
     }
 
     @Override
@@ -65,7 +73,7 @@ public class SqlTracker implements Store {
     @Override
     public boolean delete(String id) {
         String deleteQuery = String.format("DELETE FROM %s WHERE id=?", itemsTable);
-        try (PreparedStatement stmt = cn.prepareStatement(deleteQuery)) {
+        try (PreparedStatement stmt = connection.prepareStatement(deleteQuery)) {
             stmt.setLong(1, Long.parseLong(id));
             return stmt.execute();
         } catch (SQLException throwables) {
@@ -99,7 +107,7 @@ public class SqlTracker implements Store {
     private List<Item> getItems(Predicate<Item> condition) {
         List<Item> items = new ArrayList<>();
         String selectAll = String.format("SELECT * FROM %s", itemsTable);
-        try (PreparedStatement stmt = cn.prepareStatement(selectAll);
+        try (PreparedStatement stmt = connection.prepareStatement(selectAll);
              ResultSet result = stmt.executeQuery()) {
             while (result.next()) {
                 int id = result.getInt("id");
@@ -119,7 +127,7 @@ public class SqlTracker implements Store {
 
     private Item getItem(Predicate<Item> condition) {
         String selectAll = String.format("SELECT * FROM %s", itemsTable);
-        try (PreparedStatement stmt = cn.prepareStatement(selectAll);
+        try (PreparedStatement stmt = connection.prepareStatement(selectAll);
              ResultSet result = stmt.executeQuery()) {
             while (result.next()) {
                 int id = result.getInt("id");
