@@ -44,9 +44,8 @@ public class SqlTracker implements Store {
 
     @Override
     public Item add(Item item) {
-        try {
-            String addQuery = String.format("INSERT INTO %s(name) VALUES(?)", itemsTable);
-            PreparedStatement stmt = cn.prepareStatement(addQuery);
+        String addQuery = String.format("INSERT INTO %s(name) VALUES(?)", itemsTable);
+        try (PreparedStatement stmt = cn.prepareStatement(addQuery)) {
             stmt.setString(1, item.getName());
             if (!stmt.execute()) {
                 return null;
@@ -65,9 +64,8 @@ public class SqlTracker implements Store {
 
     @Override
     public boolean delete(String id) {
-        try {
-            String deleteQuery = String.format("DELETE FROM %s WHERE id=?", itemsTable);
-            PreparedStatement stmt = cn.prepareStatement(deleteQuery);
+        String deleteQuery = String.format("DELETE FROM %s WHERE id=?", itemsTable);
+        try (PreparedStatement stmt = cn.prepareStatement(deleteQuery)) {
             stmt.setLong(1, Long.parseLong(id));
             return stmt.execute();
         } catch (SQLException throwables) {
@@ -88,7 +86,7 @@ public class SqlTracker implements Store {
 
     @Override
     public Item findById(String id) {
-        return getItems(item -> item.getId().equals(id)).get(0);
+        return getItem(item -> item.getId().equals(id));
     }
 
     @Override
@@ -100,11 +98,9 @@ public class SqlTracker implements Store {
 
     private List<Item> getItems(Predicate<Item> condition) {
         List<Item> items = new ArrayList<>();
-
-        try {
-            String selectAll = String.format("SELECT * FROM %s", itemsTable);
-            PreparedStatement stmt = cn.prepareStatement(selectAll);
-            ResultSet result = stmt.executeQuery();
+        String selectAll = String.format("SELECT * FROM %s", itemsTable);
+        try (PreparedStatement stmt = cn.prepareStatement(selectAll);
+             ResultSet result = stmt.executeQuery()) {
             while (result.next()) {
                 int id = result.getInt("id");
                 String name = result.getString("name");
@@ -119,6 +115,26 @@ public class SqlTracker implements Store {
             throwables.printStackTrace();
         }
         return items;
+    }
+
+    private Item getItem(Predicate<Item> condition) {
+        String selectAll = String.format("SELECT * FROM %s", itemsTable);
+        try (PreparedStatement stmt = cn.prepareStatement(selectAll);
+             ResultSet result = stmt.executeQuery()) {
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                Item item = new Item(name);
+                item.setId(String.valueOf(id));
+                if (condition.test(item)) {
+                    return item;
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
 
 }
