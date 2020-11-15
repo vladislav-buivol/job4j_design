@@ -23,6 +23,16 @@ public class DatabaseProperties {
         return properties;
     }
 
+    public static Properties readProperties(String path) {
+        try {
+            InputStream stream = new FileInputStream(path);
+            properties.load(stream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return properties;
+    }
+
     public static String driver() {
         return String.valueOf(properties.get(driver));
     }
@@ -37,5 +47,9 @@ public class DatabaseProperties {
 
     public static String password() {
         return String.valueOf(properties.get(password));
+    }
+
+    public static String getByKey(String key) {
+        return String.valueOf(properties.get("key"));
     }
 }
