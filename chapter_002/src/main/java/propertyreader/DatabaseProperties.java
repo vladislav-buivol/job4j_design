@@ -1,4 +1,4 @@
-package propertyReader;
+package propertyreader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,10 +8,10 @@ import java.util.Properties;
 public class DatabaseProperties {
     static String propertyLocation = (System.getProperty("user.dir") + "\\chapter_002\\src\\main\\resources\\app.properties").replace("\\", File.separator);
     static Properties properties = new Properties();
-    private static final String driver = "driver-class-name";
-    private static final String url = "url";
-    private static final String username = "username";
-    private static final String password = "password";
+    private static final String DRIVER = "driver-class-name";
+    private static final String URL = "url";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     public static Properties readProperties() {
         try {
@@ -34,19 +34,19 @@ public class DatabaseProperties {
     }
 
     public static String driver() {
-        return String.valueOf(properties.get(driver));
+        return String.valueOf(properties.get(DRIVER));
     }
 
     public static String url() {
-        return String.valueOf(properties.get(url));
+        return String.valueOf(properties.get(URL));
     }
 
     public static String login() {
-        return String.valueOf(properties.get(username));
+        return String.valueOf(properties.get(USERNAME));
     }
 
     public static String password() {
-        return String.valueOf(properties.get(password));
+        return String.valueOf(properties.get(PASSWORD));
     }
 
     public static String getByKey(String key) {

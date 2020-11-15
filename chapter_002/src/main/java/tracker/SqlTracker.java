@@ -1,6 +1,6 @@
 package tracker;
 
-import propertyReader.DatabaseProperties;
+import propertyreader.DatabaseProperties;
 
 import java.sql.*;
 import java.util.ArrayList;

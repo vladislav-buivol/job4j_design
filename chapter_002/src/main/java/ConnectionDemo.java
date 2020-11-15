@@ -1,4 +1,4 @@
-import propertyReader.DatabaseProperties;
+import propertyreader.DatabaseProperties;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
