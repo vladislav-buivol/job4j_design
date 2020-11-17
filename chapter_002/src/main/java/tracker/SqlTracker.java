@@ -5,7 +5,6 @@ import propertyreader.DatabaseProperties;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 
 public class SqlTracker implements Store {
@@ -17,7 +16,7 @@ public class SqlTracker implements Store {
         Input validate = new ValidateInput(
                 new ConsoleInput()
         );
-        /*try (Store tracker = new SqlTracker()) {
+       /*try (Store tracker = new SqlTracker()) {
             tracker.init();
             List<UserAction> actions = new ArrayList<>();
             actions.add(new CreateAction());
@@ -26,7 +25,6 @@ public class SqlTracker implements Store {
             e.printStackTrace();
         }*/
     }
-
 
     public SqlTracker(Connection connection) {
         this.connection = connection;
@@ -84,17 +82,44 @@ public class SqlTracker implements Store {
 
     @Override
     public List<Item> findAll() {
-        return getItems(item -> true);
+        List<Item> items = new ArrayList<>();
+        String selectAll = String.format("SELECT * FROM %s", itemsTable);
+        try (PreparedStatement stmt = connection.prepareStatement(selectAll)) {
+            executeQueryAndGetItems(items, stmt);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return items;
     }
 
     @Override
     public List<Item> findByName(String key) {
-        return getItems(item -> item.getName().equals(key));
+        List<Item> items = new ArrayList<>();
+        String selectAll = String.format("SELECT * FROM %s WHERE name = ?", itemsTable);
+        try (PreparedStatement stmt = connection.prepareStatement(selectAll)) {
+            stmt.setString(1, key);
+            executeQueryAndGetItems(items, stmt);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return items;
     }
 
     @Override
     public Item findById(String id) {
-        return getItem(item -> item.getId().equals(id));
+        String selectAll = String.format("SELECT * FROM %s WHERE id = ?", itemsTable);
+        try (PreparedStatement stmt = connection.prepareStatement(selectAll)) {
+            stmt.setLong(1, Long.parseLong(id));
+            try (ResultSet result = stmt.executeQuery()) {
+                result.next();
+                Item item = new Item(result.getString("name"));
+                item.setId(String.valueOf(result.getInt("id")));
+                return item;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -104,45 +129,13 @@ public class SqlTracker implements Store {
         }
     }
 
-    private List<Item> getItems(Predicate<Item> condition) {
-        List<Item> items = new ArrayList<>();
-        String selectAll = String.format("SELECT * FROM %s", itemsTable);
-        try (PreparedStatement stmt = connection.prepareStatement(selectAll);
-             ResultSet result = stmt.executeQuery()) {
+    private void executeQueryAndGetItems(List<Item> items, PreparedStatement stmt) throws SQLException {
+        try (ResultSet result = stmt.executeQuery()) {
             while (result.next()) {
-                int id = result.getInt("id");
-                String name = result.getString("name");
-                Item item = new Item(name);
-                item.setId(String.valueOf(id));
-                if (condition.test(item)) {
-                    items.add(item);
-                }
+                Item item = new Item(result.getString("name"));
+                item.setId(String.valueOf(result.getInt("id")));
+                items.add(item);
             }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
-        return items;
     }
-
-    private Item getItem(Predicate<Item> condition) {
-        String selectAll = String.format("SELECT * FROM %s", itemsTable);
-        try (PreparedStatement stmt = connection.prepareStatement(selectAll);
-             ResultSet result = stmt.executeQuery()) {
-            while (result.next()) {
-                int id = result.getInt("id");
-                String name = result.getString("name");
-                Item item = new Item(name);
-                item.setId(String.valueOf(id));
-                if (condition.test(item)) {
-                    return item;
-                }
-            }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
-    }
-
 }
