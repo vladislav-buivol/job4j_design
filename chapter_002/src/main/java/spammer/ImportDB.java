@@ -13,7 +13,7 @@ public class ImportDB {
 
     private Properties cfg;
     private String dump;
-    public static String properties = ".\\chapter_002\\src\\main\\java\\spammer\\resources\\app.properties";
+    public static String properties = "./chapter_002/src/main/java/spammer/resources/app.properties";
 
     public ImportDB(Properties cfg, String dump) {
         this.cfg = cfg;
@@ -57,7 +57,11 @@ public class ImportDB {
 
     private void addUser(List<User> users, String userData) {
         String[] data = userData.split(";");
-        users.add(new User(data[0], data[1]));
+        if (data.length == 2) {
+            users.add(new User(data[0], data[1]));
+        } else {
+            throw new RuntimeException(String.format("Unable parse: %s", userData));
+        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -65,7 +69,7 @@ public class ImportDB {
         try (FileInputStream in = new FileInputStream(properties)) {
             cfg.load(in);
         }
-        ImportDB db = new ImportDB(cfg, ".\\chapter_002\\src\\main\\java\\spammer\\data\\dump.txt");
+        ImportDB db = new ImportDB(cfg, "./chapter_002/src/main/java/spammer/data/dump.txt");
         db.save(db.load());
     }
 }
