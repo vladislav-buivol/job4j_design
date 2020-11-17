@@ -14,7 +14,7 @@ notifications:
   email:
     recipients:
       - vladislav.96@mail.ru
-    on_success: false
+    on_success: never
     on_failure: always
 
 after_success:
@@ -23,3 +23,9 @@ after_success:
 env:
   global:
     - CODECOV_TOKEN="d96143b7-a96a-4fa9-8e3a-3961faae1eb7"
+
+services:
+  - postgresql
+
+before_install:
+  - psql -c 'create database tracker;' -U postgres
