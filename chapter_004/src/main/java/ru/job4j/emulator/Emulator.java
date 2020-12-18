@@ -3,7 +3,6 @@ package ru.job4j.emulator;
 import ru.job4j.emulator.cache.Cache;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Properties;
 
 public class Emulator {

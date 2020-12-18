@@ -19,7 +19,10 @@ public class EmulatorTest {
         ArrayList<Integer> ls = new ArrayList<>();
         File address = new File(String.format("%s/%s", CURRENT_DIR, properties.address()));
         File name = new File(String.format("%s/%s", CURRENT_DIR, properties.name()));
+        emulator.getData(name);
         assertThat(emulator.getData(name), equalTo("names"));
-
+        assertThat(emulator.getData(address), equalTo("address"));
+        assertThat(emulator.delete(name),equalTo(true));
+        assertThat(emulator.getData(name), equalTo("names"));
     }
 }

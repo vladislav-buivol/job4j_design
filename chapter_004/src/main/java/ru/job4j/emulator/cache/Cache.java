@@ -5,16 +5,10 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public abstract class Cache<K, V> {
-    private SoftReference<HashMap<K, V>> cache;
+    private HashMap<K, SoftReference<V>> cache = new HashMap<>();
 
     public Cache() {
-        init();
-    }
 
-    void init() {
-        if (cache == null || cache.get() == null) {
-            cache = new SoftReference<>(new HashMap<>());
-        }
     }
 
     /**
@@ -24,12 +18,10 @@ public abstract class Cache<K, V> {
      * @return object that match
      */
     public V get(K key) {
-        init();
-        V value = Objects.requireNonNull(cache.get()).get(key);
-        if (value == null) {
+        if (cache.get(key) == null || cache.get(key).get() == null) {
             load(key);
         }
-        return Objects.requireNonNull(cache.get()).get(key);
+        return cache.get(key).get();
     }
 
     /**
@@ -40,8 +32,7 @@ public abstract class Cache<K, V> {
      */
 
     public void add(K key, V value) {
-        init();
-        Objects.requireNonNull(cache.get()).put(key, value);
+        cache.put(key, new SoftReference<>(value));
     }
 
     /**
@@ -51,9 +42,8 @@ public abstract class Cache<K, V> {
      * @return true if object deleted
      */
     public boolean delete(K key) {
-        init();
-        V s = Objects.requireNonNull(cache.get()).remove(key);
-        return s != null;
+        V value = cache.remove(key).get();
+        return value != null;
     }
 
     /**
