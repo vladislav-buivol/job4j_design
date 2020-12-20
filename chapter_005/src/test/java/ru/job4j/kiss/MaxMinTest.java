@@ -30,10 +30,12 @@ public class MaxMinTest {
     public void maxMinTest() {
         MaxMin maxMin = new MaxMin();
         Integer max = maxMin.max(intLs, new MaxMin.MaxMinComparator<>());
+        Integer max2 = maxMin.max(new ArrayList<Integer>(), new MaxMin.MaxMinComparator<>());
         Integer min = maxMin.min(intLs, new MaxMin.MaxMinComparator<>());
         String biggerStr = maxMin.max(strLs, new MaxMin.MaxMinComparator<>());
         String smallerStr = maxMin.min(strLs, new MaxMin.MaxMinComparator<>());
         assertThat(max, equalTo(9));
+        assertThat(max2, equalTo(null));
         assertThat(min, equalTo(0));
         assertThat(biggerStr, equalTo("aab"));
         assertThat(smallerStr, equalTo("a"));
