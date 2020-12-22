@@ -2,7 +2,6 @@ package ru.job4j.emulator.cache;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
-import java.util.Objects;
 
 public abstract class Cache<K, V> {
     private HashMap<K, SoftReference<V>> cache = new HashMap<>();
@@ -21,7 +20,8 @@ public abstract class Cache<K, V> {
         if (cache.get(key) == null || cache.get(key).get() == null) {
             load(key);
         }
-        return cache.get(key).get();
+        V result = cache.get(key).get();
+        return result;
     }
 
     /**
