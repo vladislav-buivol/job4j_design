@@ -2,17 +2,27 @@ package ru.job4j.kiss;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class MaxMin {
     public <T> T max(List<T> value, Comparator<T> comparator) {
-        Optional<T> o = value.stream().max(comparator);
-        return o.isEmpty() ? null : o.get();
+        return compare(value, comparator.reversed());
     }
 
     public <T> T min(List<T> value, Comparator<T> comparator) {
-        Optional<T> o = value.stream().min(comparator);
-        return o.isEmpty() ? null : o.get();
+        return compare(value, comparator);
+    }
+
+    private <T> T compare(List<T> value, Comparator<T> comparator) {
+        if (value == null || value.size() == 0) {
+            return null;
+        }
+        T result = value.get(0);
+        for (int i = 1; i < value.size(); i++) {
+            if (comparator.compare(result, value.get(i)) > 0) {
+                result = value.get(i);
+            }
+        }
+        return result;
     }
 
     public static class MaxMinComparator<T extends Comparable<T>> implements Comparator<T> {
