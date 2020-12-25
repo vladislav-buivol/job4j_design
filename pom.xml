@@ -32,6 +32,7 @@
                 <db.username>postgres</db.username>
                 <db.password>password</db.password>
                 <db.driver>org.postgresql.Driver</db.driver>
+                <skip.chapter_005.tests>true</skip.chapter_005.tests>
             </properties>
         </profile>
         <profile>
@@ -68,6 +69,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
+        <skip.chapter_005.tests>false</skip.chapter_005.tests>
     </properties>
 
     <dependencies>
@@ -168,6 +170,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12</version>
+                <configuration>
+                    <skipTests>${skip.chapter_005.tests}</skipTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>
