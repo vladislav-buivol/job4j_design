@@ -10,14 +10,16 @@ public class Emulator {
     private final static String CURRENT_DIR = String.format("%s/%s", System.getProperty("user.dir"), "chapter_004");
     private Cache<File, String> cache = new Cache<>() {
         @Override
-        public void load(File file) {
+        public String load(File file) {
             try (BufferedReader in = new BufferedReader(new FileReader(file))) {
                 StringBuilder text = new StringBuilder();
                 in.lines().forEach(text::append);
                 cache.add(file, text.toString());
                 System.out.println("Loading data...");
+                return text.toString();
             } catch (Exception e) {
                 e.printStackTrace();
+                throw new RuntimeException(String.format("Cannot read file %s", file));
             }
         }
     };

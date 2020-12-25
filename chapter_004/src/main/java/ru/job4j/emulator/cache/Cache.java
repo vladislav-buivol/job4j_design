@@ -17,11 +17,13 @@ public abstract class Cache<K, V> {
      * @return object that match
      */
     public V get(K key) {
-        if (cache.get(key) == null || cache.get(key).get() == null) {
-            load(key);
+        if (cache.get(key) != null) {
+            V result = cache.get(key).get();
+            if (result != null) {
+                return result;
+            }
         }
-        V result = cache.get(key).get();
-        return result;
+        return load(key);
     }
 
     /**
@@ -51,6 +53,6 @@ public abstract class Cache<K, V> {
      *
      * @param file
      */
-    public abstract void load(K file);
+    public abstract V load(K file);
 
 }
