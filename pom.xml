@@ -61,6 +61,7 @@
                 <db.username>postgres</db.username>
                 <db.password></db.password>
                 <db.driver>org.postgresql.Driver</db.driver>
+                <skip.chapter_005.tests>true</skip.chapter_005.tests>
             </properties>
         </profile>
     </profiles>
