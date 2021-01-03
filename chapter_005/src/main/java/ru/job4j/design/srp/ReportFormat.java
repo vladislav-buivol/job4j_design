@@ -2,7 +2,7 @@ package ru.job4j.design.srp;
 
 import java.util.function.Predicate;
 
-public interface IReportFormat<T> {
+public interface ReportFormat<T> {
     /**
      * filter to find required data.
      *
@@ -11,7 +11,6 @@ public interface IReportFormat<T> {
     Predicate<T> filter();
 
     /**
-     * @param data
      * @return formatted data
      */
     String format(T data);

@@ -2,13 +2,12 @@ package ru.job4j.design.srp;
 
 import ru.job4j.design.srp.fields.EmployeeFields;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
 
-public class EmployeeReportFormat implements IReportFormat<Employee> {
+public class EmployeeReportFormat implements ReportFormat<Employee> {
     private final Predicate<Employee> predicate;
     private final String format;
     private final EmployeeFields.Fields[] headers;
@@ -51,20 +50,11 @@ public class EmployeeReportFormat implements IReportFormat<Employee> {
                 continue;
             }
             switch (header) {
-                case Name:
-                    formattedData = formattedData.replace(header.toString(), data.getName());
-                    break;
-                case Hired:
-                    formattedData = formattedData.replace(header.toString(), data.getHired().toString());
-                    break;
-                case Fired:
-                    formattedData = formattedData.replace(header.toString(), data.getFired().toString());
-                    break;
-                case Salary:
-                    formattedData = formattedData.replace(header.toString(), String.valueOf(data.getSalary()));
-                    break;
-                default:
-                    throw new RuntimeException(String.format("Header '%s' not found", header));
+                case Name -> formattedData = formattedData.replace(header.toString(), data.getName());
+                case Hired -> formattedData = formattedData.replace(header.toString(), data.getHired().toString());
+                case Fired -> formattedData = formattedData.replace(header.toString(), data.getFired().toString());
+                case Salary -> formattedData = formattedData.replace(header.toString(), String.valueOf(data.getSalary()));
+                default -> throw new RuntimeException(String.format("Header '%s' not found", header));
             }
         }
         return formattedData;

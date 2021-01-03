@@ -3,7 +3,7 @@ package ru.job4j.design.srp;
 import java.util.Collection;
 import java.util.Comparator;
 
-public interface IReport<T> {
+public interface Report<T> {
     void add(T elem);
     T delete(int i);
 

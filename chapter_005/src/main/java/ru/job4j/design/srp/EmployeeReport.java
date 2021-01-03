@@ -4,12 +4,12 @@ import ru.job4j.design.srp.fields.EmployeeFields;
 
 import java.util.*;
 
-public class EmployeeReport implements IReport<Employee> {
-    private final IReportFormat<Employee> formatter;
-    private final ArrayList<Employee> data;
+public class EmployeeReport implements Report<Employee> {
+    private final ReportFormat<Employee> formatter;
+    private final List<Employee> data;
     private final EmployeeFields.Fields[] headers;
 
-    public EmployeeReport(ArrayList<Employee> data, IReportFormat<Employee> format) {
+    public EmployeeReport(List<Employee> data, ReportFormat<Employee> format) {
         this.data = data;
         this.formatter = format;
         this.headers = ((EmployeeReportFormat) format).getHeaders();

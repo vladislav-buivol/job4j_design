@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static ru.job4j.design.srp.fields.EmployeeFields.Fields.*;
 
-public class ReportEngineTest {
+public class EmployeeReportEngineTest {
 
     @Test
     public void whenGeneratedAllFields() {
@@ -19,7 +19,7 @@ public class ReportEngineTest {
         Employee worker = new Employee("Ivan", now, now, 100);
         HtmlConverter converter = new HtmlConverter("%s%s");
         store.add(worker);
-        ReportEngine engine = new ReportEngine(store, format);
+        EmployeeReportEngine engine = new EmployeeReportEngine(store, format);
         StringBuilder expect = new StringBuilder()
                 .append("Name;Hired;Fired;Salary;")
                 .append(System.lineSeparator())
@@ -40,7 +40,7 @@ public class ReportEngineTest {
         EmployeeReportFormat format = new EmployeeReportFormat(em -> true, "%s;%s;", Name, Salary);
         Employee worker = new Employee("Ivan", now, now, 100);
         store.add(worker);
-        ReportEngine engine = new ReportEngine(store, format);
+        EmployeeReportEngine engine = new EmployeeReportEngine(store, format);
         StringBuilder expect = new StringBuilder();
         expect.append("Name;Salary;");
         expect.append(System.lineSeparator());
@@ -62,7 +62,7 @@ public class ReportEngineTest {
         store.add(worker);
         store.add(worker2);
         store.add(worker3);
-        ReportEngine engine = new ReportEngine(store, format);
+        EmployeeReportEngine engine = new EmployeeReportEngine(store, format);
         StringBuilder expect = new StringBuilder();
         expect.append("Name;Salary;");
         expect.append(System.lineSeparator());

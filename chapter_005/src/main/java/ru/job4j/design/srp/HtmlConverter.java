@@ -8,7 +8,7 @@ public class HtmlConverter implements Converter<Employee> {
     }
 
     @Override
-    public String convert(IReport<Employee> report) {
+    public String convert(Report<Employee> report) {
         StringBuilder sb = new StringBuilder();
         for (String row : report.getReport()) {
             sb.append(String.format(format, row, System.lineSeparator()));
