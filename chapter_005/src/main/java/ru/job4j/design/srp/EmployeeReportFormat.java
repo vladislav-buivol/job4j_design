@@ -12,6 +12,7 @@ public class EmployeeReportFormat implements ReportFormat<Employee> {
     private final String format;
     private final EmployeeFields.Fields[] headers;
     private String header;
+    private String separator;
 
     /**
      * @param predicate - filter to find required employees
@@ -62,6 +63,14 @@ public class EmployeeReportFormat implements ReportFormat<Employee> {
 
     public EmployeeFields.Fields[] getHeaders() {
         return headers;
+    }
+
+    public String getSeparator() {
+        return separator;
+    }
+
+    public void setSeparator(String separator) {
+        this.separator = separator;
     }
 
     public String getFormat() {

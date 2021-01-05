@@ -92,6 +92,50 @@ public class EmployeeReportEngineTest {
         assertThat(converter.convert(report), is(expectSorted.toString()));
     }
 
+
+    @Test
+    public void whenGeneratedXml() {
+        MemStore store = new MemStore();
+        Calendar now = Calendar.getInstance();
+        XmlConverter converter = new XmlConverter("%s%s");
+        EmployeeReportFormat format = new EmployeeReportFormat(em -> true, "%s;%s;", Name, Salary);
+        Employee worker = new Employee("Ivan", now, now, 100);
+        store.add(worker);
+        EmployeeReportEngine engine = new EmployeeReportEngine(store, format);
+        StringBuilder expect = new StringBuilder();
+        expect.append("<EmployeeList><header>Name;Salary;</header>");
+        expect.append(System.lineSeparator());
+        expect.append("<employee>");
+        expect.append(worker.getName()).append(";")
+                .append(worker.getSalary()).append(";");
+        expect.append("</employee>");
+        expect.append(System.lineSeparator());
+        expect.append("</EmployeeList>");
+        EmployeeReport report = engine.generate();
+        assertThat(converter.convert(report), is(expect.toString()));
+    }
+
+    @Test
+    public void whenGeneratedJson() {
+        MemStore store = new MemStore();
+        Calendar now = Calendar.getInstance();
+        EmployeeReportFormat format = new EmployeeReportFormat(em -> true, "%s;%s;", Name, Salary);
+        format.setSeparator(";");
+        JsonConverter converter = new JsonConverter(format);
+        Employee worker = new Employee("Ivan", now, now, 100);
+        store.add(worker);
+        EmployeeReportEngine engine = new EmployeeReportEngine(store, format);
+        StringBuilder expect = new StringBuilder();
+        expect.append("{")
+                .append(System.lineSeparator());
+        expect.append("{\"Salary\":\"100.0\",\"Name\":\"Ivan\"}")
+                .append(System.lineSeparator());
+        expect.append("}");
+        EmployeeReport report = engine.generate();
+        assertThat(converter.convert(report), is(expect.toString()));
+    }
+
+
     private void addWorkerToStr(Employee worker, StringBuilder expect) {
         expect.append(worker.getName()).append(";")
                 .append(worker.getSalary()).append(";")
