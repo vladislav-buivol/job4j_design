@@ -1,11 +1,13 @@
 package ru.job4j.lsp;
 
+import java.util.List;
+
 public interface Store<T> {
     void add(T item);
 
-    void delete(int id);
+    boolean accept(T t);
 
-    T get(int id);
+    List<T> clear();
 
     int size();
 }

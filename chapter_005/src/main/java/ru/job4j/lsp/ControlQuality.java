@@ -1,47 +1,26 @@
 package ru.job4j.lsp;
 
+import java.util.Arrays;
+import java.util.List;
 
-import java.time.LocalDateTime;
-import java.util.Calendar;
+public class ControlQuality implements Distributor<Food> {
+    private final List<Store<Food>> storeList;
 
-import static java.time.temporal.ChronoUnit.DAYS;
+    public ControlQuality(Store<Food>... stores) {
+        storeList = Arrays.asList(stores);
+    }
 
-public class ControlQuality implements Strategy<Food> {
-    private final Warehouse warehouse;
-    private final Shop shop;
-    private final Trash trash;
-
-    public ControlQuality(Warehouse warehouse, Shop shop, Trash trash) {
-        this.warehouse = warehouse;
-        this.shop = shop;
-        this.trash = trash;
+    public ControlQuality(List<Store<Food>> storeList) {
+        this.storeList = storeList;
     }
 
     @Override
-    public void doOperation(Food food) {
-        Calendar now = Calendar.getInstance();
-        long totalDays = daysBetween(food.getCreateDate(), food.getExpiryDate());
-        long remainingDays = daysBetween(now, food.getExpiryDate());
-
-        double spent = 1 - (double) remainingDays / totalDays;
-        if (spent < 0.25 && remainingDays > 0) {
-            warehouse.add(food);
-        } else if (spent < 0.75 && remainingDays > 0) {
-            shop.add(food);
-        } else if (spent >= 0.75 && remainingDays > 0) {
-            shop.add(food);
-            food.setDiscount(0.5);
-        } else {
-            trash.add(food);
+    public void distribute(Food food) {
+        for (Store<Food> store : storeList) {
+            if (store.accept(food)) {
+                store.add(food);
+                return;
+            }
         }
-
-    }
-
-    private LocalDateTime toLocalDate(Calendar calendar) {
-        return LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()).toLocalDate().atStartOfDay();
-    }
-
-    private long daysBetween(Calendar startDate, Calendar endDate) {
-        return DAYS.between(toLocalDate(startDate), toLocalDate(endDate));
     }
 }

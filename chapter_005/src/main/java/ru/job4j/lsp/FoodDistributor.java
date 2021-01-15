@@ -8,12 +8,12 @@ public class FoodDistributor {
         Warehouse warehouse = new Warehouse();
         Shop shop = new Shop();
         Trash trash = new Trash();
-        Strategy<Food> strategy = new ControlQuality(warehouse, shop, trash);
+        Distributor<Food> distributor = new ControlQuality(warehouse, shop, trash);
         Calendar expiryDate = Calendar.getInstance();
         Calendar createDate = Calendar.getInstance();
         expiryDate.set(2021, Calendar.JANUARY, 11);
         createDate.set(2021, Calendar.JANUARY, 1);
         Cheese cheese = new Cheese("Cheese", createDate, expiryDate, new BigDecimal("12"), 0);
-        strategy.doOperation(cheese);
+        distributor.distribute(cheese);
     }
 }

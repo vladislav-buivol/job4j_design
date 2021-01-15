@@ -13,14 +13,14 @@ public class FoodDistributorTest {
     Warehouse warehouse;
     Shop shop;
     Trash trash;
-    Strategy<Food> strategy;
+    Distributor<Food> distributor;
 
     @Before
     public void init() {
         warehouse = new Warehouse();
         shop = new Shop();
         trash = new Trash();
-        strategy = new ControlQuality(warehouse, shop, trash);
+        distributor = new ControlQuality(warehouse, shop, trash);
     }
 
     @Test
@@ -29,7 +29,7 @@ public class FoodDistributorTest {
         Calendar createDate = Calendar.getInstance();
         expiryDate.add(Calendar.DATE, 10);
         Cheese cheese = new Cheese("Cheese", createDate, expiryDate, new BigDecimal("12"), 0);
-        strategy.doOperation(cheese);
+        distributor.distribute(cheese);
         assertThat(warehouse.size(), equalTo(1));
         assertThat(shop.size(), equalTo(0));
         assertThat(trash.size(), equalTo(0));
@@ -43,7 +43,7 @@ public class FoodDistributorTest {
         expiryDate.add(Calendar.DATE, 10);
         createDate.add(Calendar.DATE, -7);
         Cheese cheese = new Cheese("Cheese", createDate, expiryDate, new BigDecimal("12"), 0);
-        strategy.doOperation(cheese);
+        distributor.distribute(cheese);
         assertThat(warehouse.size(), equalTo(0));
         assertThat(shop.size(), equalTo(1));
         assertThat(trash.size(), equalTo(0));
@@ -57,7 +57,7 @@ public class FoodDistributorTest {
         expiryDate.add(Calendar.DATE, 10);
         createDate.add(Calendar.DATE, -30);
         Cheese cheese = new Cheese("Cheese", createDate, expiryDate, new BigDecimal("12"), 0);
-        strategy.doOperation(cheese);
+        distributor.distribute(cheese);
         assertThat(warehouse.size(), equalTo(0));
         assertThat(shop.size(), equalTo(1));
         assertThat(trash.size(), equalTo(0));
@@ -70,7 +70,7 @@ public class FoodDistributorTest {
         Calendar createDate = Calendar.getInstance();
         expiryDate.add(Calendar.DATE, -1);
         Cheese cheese = new Cheese("Cheese", createDate, expiryDate, new BigDecimal("12"), 0);
-        strategy.doOperation(cheese);
+        distributor.distribute(cheese);
         assertThat(warehouse.size(), equalTo(0));
         assertThat(shop.size(), equalTo(0));
         assertThat(trash.size(), equalTo(1));
