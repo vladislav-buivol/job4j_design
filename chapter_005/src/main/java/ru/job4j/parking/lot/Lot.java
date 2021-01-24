@@ -1,90 +1,91 @@
 package ru.job4j.parking.lot;
 
-import ru.job4j.parking.car.Car;
-import ru.job4j.parking.car.CarType;
+import ru.job4j.parking.car.Vehicle;
+import ru.job4j.parking.car.VehicleType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class Lot implements ParkingLot {
+public class Lot implements ParkingLot {
     protected boolean available;
-    protected int parkingLotSize;
+    protected int maxAllowedCarSize;
     protected int remainingSpace;
-    protected List<Car> parkedCars = new ArrayList<>();
+    protected List<Vehicle> parkedVehicles = new ArrayList<>();
+    private final List<VehicleType> suitableCars;
 
 
-    public Lot(int parkingLotSize, Car parkedCar) {
-        if (parkedCar == null) {
-            throw new RuntimeException("Parked car cannot be null");
-        }
-        this.available = false;
-        this.parkedCars.add(parkedCar);
-        this.parkingLotSize = parkingLotSize;
-        this.remainingSpace = parkingLotSize - parkedCar.type().getRequiredSpace();
-    }
-
-    public Lot(boolean available, int parkingLotSize) {
+    public Lot(boolean available, int maxAllowedCarSize, List<VehicleType> suitableCars) {
         this.available = available;
-        this.parkingLotSize = parkingLotSize;
-        this.remainingSpace = parkingLotSize;
+        this.maxAllowedCarSize = maxAllowedCarSize;
+        this.remainingSpace = maxAllowedCarSize;
+        this.suitableCars = suitableCars;
     }
 
     public void setAvailable(boolean available) {
         if (available) {
-            this.parkedCars.clear();
+            this.parkedVehicles.clear();
         }
         this.available = available;
     }
 
     @Override
-    public void parkCar(Car car) {
-        if (!canPark(car)) {
-            throw new RuntimeException(String.format("Car: %s cannot be parked here", car));
+    public void parkCar(Vehicle vehicle) {
+        if (!canPark(vehicle)) {
+            throw new RuntimeException(String.format("Car: %s cannot be parked here", vehicle));
         } else {
-            int remaining = remainingSpace - car.type().getRequiredSpace();
+            int remaining = remainingSpace - vehicle.getRequiredSpace();
             if (remaining >= 0) {
-                this.parkedCars.add(car);
+                this.parkedVehicles.add(vehicle);
                 if (remaining == 0) {
                     this.setAvailable(false);
                 }
             } else {
-                throw new RuntimeException(String.format("Car: %s cannot be parked here", car));
+                throw new RuntimeException(String.format("Car: %s cannot be parked here", vehicle));
             }
             this.remainingSpace = remaining;
         }
     }
 
     @Override
-    public boolean canPark(Car car) {
-        return suitableFor().contains(car.type()) || isAvailable();
+    public Collection<Vehicle> parkedCars() {
+        return parkedVehicles;
     }
 
     @Override
-    public abstract Collection<CarType> suitableFor();
+    public boolean canPark(Vehicle vehicle) {
+        return suitableFor().contains(vehicle.type()) || isAvailable();
+    }
 
     @Override
-    public abstract boolean isAvailable();
+    public Collection<VehicleType> suitableFor() {
+        return suitableCars;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return available;
+    }
 
     @Override
     public int parkedCarsTakePlace() {
-        if (parkedCars.size() == 0) {
+        if (parkedVehicles.size() == 0) {
             return 0;
         }
         int i = 0;
-        for (Car car : parkedCars) {
-            i += car.type().getRequiredSpace();
+        for (Vehicle vehicle : parkedVehicles) {
+            i += vehicle.getRequiredSpace();
         }
         return i;
     }
 
     @Override
     public int lotSize() {
-        return this.parkingLotSize;
+        return this.maxAllowedCarSize;
     }
 
     @Override
     public String toString() {
-        return "Lot{" + "available=" + available + ", parkingLotSize=" + parkingLotSize + ", remainingSpace=" + remainingSpace + ", parkedCars=" + parkedCars + '}';
+        return "Lot{" + "available=" + available + ", parkingLotSize=" + maxAllowedCarSize + ", remainingSpace=" + remainingSpace + ", parkedCars=" + parkedVehicles + '}';
     }
 }

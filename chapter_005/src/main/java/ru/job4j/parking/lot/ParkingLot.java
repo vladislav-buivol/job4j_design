@@ -1,10 +1,9 @@
 package ru.job4j.parking.lot;
 
-import ru.job4j.parking.car.Car;
-import ru.job4j.parking.car.CarType;
+import ru.job4j.parking.car.Vehicle;
+import ru.job4j.parking.car.VehicleType;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public interface ParkingLot {
     /**
@@ -15,7 +14,7 @@ public interface ParkingLot {
     /**
      * @return carTypes that can be parked
      */
-    Collection<CarType> suitableFor();
+    Collection<VehicleType> suitableFor();
 
     /**
      * @return how much space take parked car
@@ -23,19 +22,19 @@ public interface ParkingLot {
     int parkedCarsTakePlace();
 
     /**
-     * @param car - car that parked on this lot
+     * @param vehicle - car that parked on this lot
      */
-    void parkCar(Car car);
+    void parkCar(Vehicle vehicle);
 
     /**
      * @return parked car on lot
      */
-    Collection<Car> parkedCars();
+    Collection<Vehicle> parkedCars();
 
     /**
      * @return true, if car can be parked
      */
-    boolean canPark(Car car);
+    boolean canPark(Vehicle vehicle);
 
 
     /**

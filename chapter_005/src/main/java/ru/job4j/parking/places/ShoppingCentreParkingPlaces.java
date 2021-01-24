@@ -1,6 +1,6 @@
 package ru.job4j.parking.places;
 
-import ru.job4j.parking.car.CarType;
+import ru.job4j.parking.car.VehicleType;
 import ru.job4j.parking.lot.ParkingLot;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ShoppingCentreParkingPlaces implements ParkingPlaces {
-    private final Set<CarType> suitableCars = new HashSet<>();
+    private final Set<VehicleType> suitableCars = new HashSet<>();
     private final List<ParkingLot> parkingLots;
 
     public ShoppingCentreParkingPlaces(String placeName, List<ParkingLot> parkingLots) {
@@ -23,7 +23,7 @@ public class ShoppingCentreParkingPlaces implements ParkingPlaces {
     }
 
     @Override
-    public Set<CarType> availableFor() {
+    public Set<VehicleType> availableFor() {
         return suitableCars;
     }
 
