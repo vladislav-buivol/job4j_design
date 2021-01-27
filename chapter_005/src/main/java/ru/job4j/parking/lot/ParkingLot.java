@@ -1,7 +1,6 @@
 package ru.job4j.parking.lot;
 
 import ru.job4j.parking.car.Vehicle;
-import ru.job4j.parking.car.VehicleType;
 
 import java.util.Collection;
 
@@ -10,11 +9,6 @@ public interface ParkingLot {
      * @return true, is car can be parked on this lot
      */
     boolean isAvailable();
-
-    /**
-     * @return carTypes that can be parked
-     */
-    Collection<VehicleType> suitableFor();
 
     /**
      * @return how much space take parked car

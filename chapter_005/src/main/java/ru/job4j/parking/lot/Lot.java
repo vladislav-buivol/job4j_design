@@ -1,7 +1,6 @@
 package ru.job4j.parking.lot;
 
 import ru.job4j.parking.car.Vehicle;
-import ru.job4j.parking.car.VehicleType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,14 +11,12 @@ public class Lot implements ParkingLot {
     protected int maxAllowedCarSize;
     protected int remainingSpace;
     protected List<Vehicle> parkedVehicles = new ArrayList<>();
-    private final List<VehicleType> suitableCars;
 
 
-    public Lot(boolean available, int maxAllowedCarSize, List<VehicleType> suitableCars) {
+    public Lot(boolean available, int maxAllowedCarSize) {
         this.available = available;
         this.maxAllowedCarSize = maxAllowedCarSize;
         this.remainingSpace = maxAllowedCarSize;
-        this.suitableCars = suitableCars;
     }
 
     public void setAvailable(boolean available) {
@@ -54,12 +51,7 @@ public class Lot implements ParkingLot {
 
     @Override
     public boolean canPark(Vehicle vehicle) {
-        return suitableFor().contains(vehicle.type()) || isAvailable();
-    }
-
-    @Override
-    public Collection<VehicleType> suitableFor() {
-        return suitableCars;
+        return isAvailable();
     }
 
     @Override
