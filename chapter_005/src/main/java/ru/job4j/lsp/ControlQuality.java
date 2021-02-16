@@ -1,5 +1,8 @@
 package ru.job4j.lsp;
 
+import ru.job4j.lsp.utils.ControlQualityUtils;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,5 +25,15 @@ public class ControlQuality implements Distributor<Food> {
                 return;
             }
         }
+    }
+
+    @Override
+    public List<Store<Food>> resort() {
+        List<Food> foods = ControlQualityUtils.extractAllFood(storeList);
+        ControlQualityUtils.clearStores(storeList);
+        for (Food food : foods) {
+            distribute(food);
+        }
+        return storeList;
     }
 }

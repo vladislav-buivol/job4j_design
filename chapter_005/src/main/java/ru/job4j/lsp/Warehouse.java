@@ -6,8 +6,7 @@ import java.util.List;
 import static ru.job4j.lsp.DateUtils.usedByPerCent;
 import static ru.job4j.lsp.DateUtils.remainingDays;
 
-public class Warehouse implements Store<Food> {
-    List<Food> foods = new ArrayList<>();
+public class Warehouse extends FoodStore {
 
     @Override
     public void add(Food food) {

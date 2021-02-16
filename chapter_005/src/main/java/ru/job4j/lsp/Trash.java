@@ -5,8 +5,7 @@ import java.util.List;
 
 import static ru.job4j.lsp.DateUtils.*;
 
-public class Trash implements Store<Food> {
-    List<Food> foods = new ArrayList<>();
+public class Trash extends FoodStore {
 
     @Override
     public void add(Food food) {

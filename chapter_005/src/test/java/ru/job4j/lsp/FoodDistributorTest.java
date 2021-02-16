@@ -34,6 +34,11 @@ public class FoodDistributorTest {
         assertThat(shop.size(), equalTo(0));
         assertThat(trash.size(), equalTo(0));
         assertThat(cheese.getDiscount(), equalTo(0d));
+        distributor.resort();
+        assertThat(warehouse.size(), equalTo(1));
+        assertThat(shop.size(), equalTo(0));
+        assertThat(trash.size(), equalTo(0));
+        assertThat(cheese.getDiscount(), equalTo(0d));
     }
 
     @Test
@@ -44,6 +49,11 @@ public class FoodDistributorTest {
         createDate.add(Calendar.DATE, -7);
         Cheese cheese = new Cheese("Cheese", createDate, expiryDate, new BigDecimal("12"), 0);
         distributor.distribute(cheese);
+        assertThat(warehouse.size(), equalTo(0));
+        assertThat(shop.size(), equalTo(1));
+        assertThat(trash.size(), equalTo(0));
+        assertThat(cheese.getDiscount(), equalTo(0d));
+        distributor.resort();
         assertThat(warehouse.size(), equalTo(0));
         assertThat(shop.size(), equalTo(1));
         assertThat(trash.size(), equalTo(0));
@@ -62,6 +72,11 @@ public class FoodDistributorTest {
         assertThat(shop.size(), equalTo(1));
         assertThat(trash.size(), equalTo(0));
         assertThat(true, equalTo(cheese.getDiscount() > 0));
+        distributor.resort();
+        assertThat(warehouse.size(), equalTo(0));
+        assertThat(shop.size(), equalTo(1));
+        assertThat(trash.size(), equalTo(0));
+        assertThat(true, equalTo(cheese.getDiscount() > 0));
     }
 
     @Test
@@ -71,6 +86,11 @@ public class FoodDistributorTest {
         expiryDate.add(Calendar.DATE, -1);
         Cheese cheese = new Cheese("Cheese", createDate, expiryDate, new BigDecimal("12"), 0);
         distributor.distribute(cheese);
+        assertThat(warehouse.size(), equalTo(0));
+        assertThat(shop.size(), equalTo(0));
+        assertThat(trash.size(), equalTo(1));
+        assertThat(cheese.getDiscount(), equalTo(0d));
+        distributor.resort();
         assertThat(warehouse.size(), equalTo(0));
         assertThat(shop.size(), equalTo(0));
         assertThat(trash.size(), equalTo(1));

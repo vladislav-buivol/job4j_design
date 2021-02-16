@@ -10,4 +10,8 @@ public interface Store<T> {
     List<T> clear();
 
     int size();
+
+    T get(int i);
+
+    List<Food> getAll();
 }
