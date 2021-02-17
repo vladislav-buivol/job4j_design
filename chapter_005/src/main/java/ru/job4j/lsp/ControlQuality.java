@@ -1,25 +1,24 @@
 package ru.job4j.lsp;
 
-import ru.job4j.lsp.utils.ControlQualityUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ControlQuality implements Distributor<Food> {
-    private final List<Store<Food>> storeList;
+    private final StoresHolder<Food> storeList;
 
     public ControlQuality(Store<Food>... stores) {
-        storeList = Arrays.asList(stores);
+        storeList = new InMemoryStoreHolder<>();
+        for (Store<Food> store : stores) {
+            storeList.addStore(store);
+        }
     }
 
-    public ControlQuality(List<Store<Food>> storeList) {
+    public ControlQuality(StoresHolder<Food> storeList) {
         this.storeList = storeList;
     }
 
     @Override
     public void distribute(Food food) {
-        for (Store<Food> store : storeList) {
+        for (Store<Food> store : storeList.getStores()) {
             if (store.accept(food)) {
                 store.add(food);
                 return;
@@ -29,11 +28,11 @@ public class ControlQuality implements Distributor<Food> {
 
     @Override
     public List<Store<Food>> resort() {
-        List<Food> foods = ControlQualityUtils.extractAllFood(storeList);
-        ControlQualityUtils.clearStores(storeList);
+        List<Food> foods = storeList.extractAllFood();
+        storeList.clearStores();
         for (Food food : foods) {
             distribute(food);
         }
-        return storeList;
+        return storeList.getStores();
     }
 }

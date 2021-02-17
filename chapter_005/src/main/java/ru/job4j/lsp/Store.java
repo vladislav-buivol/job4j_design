@@ -13,5 +13,5 @@ public interface Store<T> {
 
     T get(int i);
 
-    List<Food> getAll();
+    List<T> getAll();
 }
