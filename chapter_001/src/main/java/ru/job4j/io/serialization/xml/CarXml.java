@@ -1,11 +1,8 @@
 package ru.job4j.io.serialization.xml;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import ru.job4j.io.Serializator;
+
 import javax.xml.bind.annotation.*;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Arrays;
 
 @XmlRootElement(name = "car")
@@ -28,45 +25,17 @@ public class CarXml {
     private int registrationYear;
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Person person = new Person(false, 30, new Contact("11-111"), "Worker", "Married");
         Person person2 = new Person(true, 44, new Contact("22-22"), "Worker", "Married");
-        CarXml car = new CarXml(true, person, new Person[]{person}, "123asd", 2020);
-        JAXBContext context = JAXBContext.newInstance(CarXml.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        String xml = "";
-        try (StringWriter writer = new StringWriter()) {
-            marshaller.marshal(car, writer);
-            xml = writer.getBuffer().toString();
-            System.out.println(xml);
-        }
-
-        String carXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + " <car registered=\"true\" owner=\"Bob\" carNumber=\"123ASD\" registrationYear=\"2020\">"
-                + "    <users>"
-                + "        <person sex=\"false\" age=\"30\">"
-                + "            <contact phone=\"11-111\"/>"
-                + "            <statuses>"
-                + "                <status>Worker</status>"
-                + "                <status>Married</status>"
-                + "            </statuses>"
-                + "        </person>"
-                + "        <person sex=\"false\" age=\"44\">"
-                + "            <contact phone=\"22-222\"/>"
-                + "            <statuses>"
-                + "                <status>Worker</status>"
-                + "                <status>Married</status>"
-                + "            </statuses>"
-                + "        </person>"
-                + "    </users>"
-                + " </car>";
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        try (StringReader reader = new StringReader(carXML)) {
-            CarXml carFromString = (CarXml) unmarshaller.unmarshal(reader);
-            System.out.println(carFromString);
-        }
+        CarXml car = new CarXml(true, person, new Person[]{person, person2}, "123asd", 2020);
+        Serializator serializator = new Serializator();
+        System.out.println(serializator.serialize(car, CarXml.class));
+        Reader fileReader = new Reader();
+        String carXML = fileReader.read("chapter_001/src/main/java/ru/job4j/io/serialization/xml/cars/car.xml");
+        System.out.println(serializator.deserialize(carXML, CarXml.class));
     }
+
 
     @Override
     public String toString() {

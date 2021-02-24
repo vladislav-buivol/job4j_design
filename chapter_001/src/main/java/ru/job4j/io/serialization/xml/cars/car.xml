@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<car registered="true" owner="Bob" carNumber="123ASD" registrationYear="2020">
+    <users>
+        <person sex="false" age="30">
+            <contact phone="11-111"/>
+            <statuses>
+                <status>Worker</status>
+                <status>Married</status>
+            </statuses>
+        </person>
+        <person sex="false" age="44">
+            <contact phone="22-222"/>
+            <statuses>
+                <status>Worker</status>
+                <status>Married</status>
+            </statuses>
+        </person>
+    </users>
+</car>
